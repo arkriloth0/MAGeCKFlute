@@ -16,7 +16,7 @@
 #' @param x_cut An one or two-length numeric vector, specifying the cutoff used for x-axis.
 #' @param y_cut An one or two-length numeric vector, specifying the cutoff used for y-axis.
 #' @param slope A numberic value indicating slope of the diagonal cutoff.
-#' @param intercept A numberic value indicating intercept of the diagonal cutoff.
+#' @param intercept A numeric value indicating intercept of the diagonal cutoff.
 #' @param auto_cut Boolean or numeric, specifying how many standard deviation will be used as cutoff.
 #' @param auto_cut_x Boolean or numeric, specifying how many standard deviation will be used as cutoff on x-axis.
 #' @param auto_cut_y Boolean or numeric, specifying how many standard deviation will be used as cutoff on y-axis
@@ -31,6 +31,11 @@
 #' @param label.top Boolean, specifying whether label top hits.
 #' @param top Integer, specifying the number of top terms in the groups to be labeled.
 #' @param toplabels Character vector, specifying terms to be labeled.
+#' @param omit Character vector, specifying terms to be omitted from grouping and labelling, values should be in label column.
+#' @param label.type Character vector, either "text" to use 'geom_text_repel' (default), or label" to use 'geom_label_repel' for generating labels with visible box borders.
+#' @param label.text.size Numeric, specifying label text size.
+#' @param italics Boolean, specifying whether labels should be italicised, i.e. gene names 
+#' @param bold Boolean, specifying whether labels should be in bold
 #'
 #' @param display_cut Boolean, indicating whether display the dashed line of cutoffs.
 #'
@@ -42,9 +47,10 @@
 #' @param main Title of the figure.
 #' @param xlab Title of x-axis
 #' @param ylab Title of y-axis.
+#' @param base_size Base size of text
 #' @param legend.position Position of legend, "none", "right", "top", "bottom", or
 #' a two-length vector indicating the position.
-#' @param ... Other available parameters in function 'geom_text_repel'.
+#' @param ... Other available parameters in function 'geom_text_repel' or 'geom_label_repel'.
 #'
 #' @return An object created by \code{ggplot}, which can be assigned and further customized.
 #'
@@ -70,9 +76,10 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
                       auto_cut = FALSE, auto_cut_x = auto_cut,
                       auto_cut_y = auto_cut, auto_cut_diag = auto_cut,
                       groups = NULL, group_col = NULL, groupnames = NULL,
-                      label.top = TRUE, top = 0, toplabels = NULL,
+                      label.top = TRUE, top = 0, toplabels = NULL, omit = NULL,
+                      label.type = "text", label.text.size = NA, italics = TRUE, bold = FALSE,
                       display_cut = FALSE, color = NULL, shape = 16, size = 1, alpha = 0.6,
-                      main = NULL, xlab = x, ylab = y, legend.position = "none", ...){
+                      main = NULL, xlab = x, ylab = y, base_size = 14, legend.position = "none", ...){
   requireNamespace("ggplot2", quietly=TRUE) || stop("need ggplot package")
   requireNamespace("ggrepel", quietly=TRUE) || stop("need ggrepel package")
   data = as.data.frame(data, stringsAsFactors = FALSE)
@@ -109,22 +116,26 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
   if(auto_cut_diag)
     intercept = c(-CutoffCalling(data[,y]-slope*data[,x], auto_cut_diag),
                   CutoffCalling(data[,y]-slope*data[,x], auto_cut_diag))
-
+  
   ## Decide the colored groups
-  avail_groups = c("topleft", "topright", "bottomleft", "bottomright",
-                   "midleft", "topcenter", "midright", "bottomcenter", "midcenter",
-                   "top", "mid", "bottom", "left", "center", "right", "none")
+  avail_groups = c(
+    "topleft", "topright", "bottomleft", "bottomright",
+    "midleft", "topcenter", "midright", "bottomcenter", "midcenter",
+    "top", "mid", "bottom", "left", "center", "right", "none")
   ## Select the colors
-  mycolour = c("#1f78b4", "#fb8072", "#33a02c", "#ff7f00",
-               "#bc80bd", "#66c2a5", "#6a3d9a", "#fdb462", "#ffed6f",
-               "#e78ac3", "#fdb462", "#8da0cb", "#66c2a5", "#fccde5", "#fc8d62", "#d9d9d9")
+  mycolour = c(
+    "#1f78b4", "#fb8072",
+    # "#8da0cb", "#e78ac3", 
+    "#33a02c", "#ff7f00",
+    "#bc80bd", "#66c2a5", "#6a3d9a", "#fdb462", "#ffed6f",
+    "#e78ac3", "#fdb462", "#8da0cb", "#66c2a5", "#fccde5", "#fc8d62", "#d9d9d9")
   names(mycolour) = avail_groups
-
+  
   if(model == "ninesquare") groups = c("midleft", "topcenter", "midright", "bottomcenter")
   if(model == "volcano") groups = c("topleft", "topright")
   if(model == "rank") groups = c("left", "right")
   groups = intersect(groups, avail_groups)
-
+  
   ## Annotate the groups in the data frame
   if(length(x_cut)>0){
     idx1 = data[,x] < min(x_cut)
@@ -146,7 +157,7 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
   }else{
     idx5 = NA; idx6 = NA
   }
-  data$group="none"
+  data$group <- "none"
   for(gr in groups){
     if(gr=="topleft") idx = cbind(idx1, idx4, idx6)
     if(gr=="topcenter") idx = cbind(!idx1, !idx2, idx4, idx6)
@@ -159,7 +170,7 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
     if(gr=="bottomright") idx = cbind(idx2, idx3, idx5)
     if(gr=="top"){
       if(length(y_cut)>0 & length(intercept)>0)
-         idx = idx4 & idx6
+        idx = idx4 & idx6
       else if(length(y_cut)>0)
         idx = idx4
       else idx = idx6
@@ -175,10 +186,10 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
     if(gr=="left"){
       if(length(x_cut)>0 & length(intercept)>0)
         if(slope>0) idx = idx1 & idx6 else idx = idx1 & idx5
-      else if(length(x_cut)>0)
-        idx = idx1
-      else
-        if(slope>0) idx = idx6 else idx = idx5
+        else if(length(x_cut)>0)
+          idx = idx1
+        else
+          if(slope>0) idx = idx6 else idx = idx5
     }
     if(gr=="center") idx = (!idx1) & (!idx2)
     if(gr=="right"){
@@ -203,21 +214,31 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
         data$group[rowSums(idx)==ncol(idx)] = gr
     }
   }
+  # Assign genes in `omit` to "none" group
+  data$group[data$Label %in% omit] = "none"
+  
   data$group=factor(data$group, levels = unique(c(groups, "none")))
   ## Group names
   if(length(groupnames)!=length(groups)) groupnames = groups
   if(length(groups)>0) names(groupnames) = groups
   if(length(group_col)==length(groups)) mycolour[groups] = group_col
   if(length(groups)==0) mycolour["none"] = "#FF6F61"
-
+  
   ## Label top gene names ##
   data$rank = top + 1
   for(g in groups){
     idx1 = data$group==g
     x_symb = 0; y_symb = 0;
-    if(g=="topleft"){ x_symb = 1; y_symb = -1 }
+    if(model == "volcano") {
+      if(g=="topleft"){ x_symb = 1; y_symb = 0 }
+      if(g=="topright"){ x_symb = -1; y_symb = 0 }
+    } else {
+      if(g=="topleft"){ x_symb = 1; y_symb = -1 }
+      if(g=="topright"){ x_symb = -1; y_symb = -1 }
+    }
+    # if(g=="topleft"){ x_symb = 1; y_symb = -1 }
     if(g=="topcenter"){ x_symb = 0; y_symb = -1 }
-    if(g=="topright"){ x_symb = -1; y_symb = -1 }
+    # if(g=="topright"){ x_symb = -1; y_symb = -1 }
     if(g=="midleft"){ x_symb = 1; y_symb = 0 }
     if(g=="midright"){ x_symb = -1; y_symb = 0 }
     if(g=="bottomleft"){ x_symb = 1; y_symb = 1 }
@@ -234,7 +255,7 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
   }
   data$rank[data$rank==0] = Inf
   if(mode(toplabels)=="list"){
-    data$Label[data$rank>top & !(data$Label %in% unlist(toplabels))] = ""
+    data$Label[data$rank>top & !(data$Label %in% unlist(toplabels))] = NA
     data$group = data$Label;
     if(length(toplabels)>0){
       tmp = stack(toplabels)
@@ -244,7 +265,15 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
       data$group[!(data$group%in%tmp[,2]) & data$group!=""] = "Top hits"
     }
   }else{
-    data$Label[data$rank>top & !(data$Label %in% toplabels)] = ""
+    # data$Label[data$rank<top & !(data$Label %in% toplabels)] = NA
+    data$Label[data$rank>top & !(data$Label %in% toplabels)] = NA
+  }
+  
+  if (italics | bold) {
+    label.na <- is.na(data$Label)
+    if(italics & bold) {data$Label = paste0("bolditalic(\"",data$Label,"\")")} else
+    if(italics) {data$Label = paste0("italic(\"",data$Label,"\")")} else {data$Label = paste0("bold(\"",data$Label,"\")")}
+    data$Label[label.na] = NA
   }
 
   ## Color issue
@@ -260,12 +289,12 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
     color = "color"
     warning("Only the first color is took.")
   }
-
+  
   ## Plot the scatter figure ##
   gg = data
-
+  
   ## Plot the figure
-  gg = gg[order(gg[,color]), ]
+  # gg = gg[order(gg[,color]), ]
   p = ggplot(gg, aes_string(x, y, label="Label", color = color))
   if(all(c(shape,size)%in%colnames(gg)))
     p = p + geom_point(aes_string(shape = shape, size = size), alpha = alpha)
@@ -275,7 +304,7 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
     p = p + geom_point(aes_string(size = size), shape = shape, alpha = alpha)
   else
     p = p + geom_point(size = size, shape = shape, alpha = alpha)
-
+  
   ## Customize colors
   if(color=="group"){
     if(mode(toplabels)!="list")
@@ -294,9 +323,8 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
       p = p + scale_color_brewer(type = "div")
     }
   }
+  
 
-  if(label.top)
-    p = p + ggrepel::geom_text_repel(...)
   if(display_cut){
     if(length(x_cut)>0)
       p = p + geom_vline(xintercept = x_cut,linetype = "dotted")
@@ -305,11 +333,27 @@ ScatterView<-function(data, x = "x", y = "y", label = 0,
     if(length(intercept)>0)
       p = p + geom_abline(slope=slope, intercept=intercept, linetype = "dotted")
   }
-  p = p + labs(x=xlab, y = ylab, title = main, color = NULL)
-  p = p + theme_bw(base_size = 14)
-  p = p + theme(plot.title = element_text(hjust = 0.5))
-  p = p + theme(legend.position = legend.position)
-
+  if(label.top) {
+    if (label.type == "text") {
+      if (italics == T) {
+        p = p + ggrepel::geom_text_repel(show.legend = F, size = label.text.size, parse = T, ...) 
+      } else{
+        p = p + ggrepel::geom_text_repel(show.legend = F, size = label.text.size, ...)
+      }
+    } else if (label.type == "label") {
+      if (italics == T) {
+        p = p + ggrepel::geom_label_repel(show.legend = F, size = label.text.size, parse = T, ...) 
+      } else{
+        p = p + ggrepel::geom_label_repel(show.legend = F, size = label.text.size, ...)
+      }
+    }
+  }
+  p = p + labs(x=xlab, y = ylab, title = main, color = NULL) +
+    # theme_bw(base_size = base_size) +
+    theme_classic(base_size = base_size) +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(legend.position = legend.position)
+  
   return(p)
 }
 
@@ -335,13 +379,10 @@ CutoffCalling=function(d, scale=2){
   if(is.logical(scale) & scale){
     param = round(length(d) / 20000, digits = 1)
   }else if(is.numeric(scale)){param = scale}
-
-  Control_mean=0
+  
   sorted_beta=sort(abs(d))
-  temp=quantile(sorted_beta,0.68)
-  temp_2=qnorm(0.84)
-  cutoff=round(temp/temp_2,digits = 3)
+  temp=quantile(sorted_beta,pnorm(1)-pnorm(-1))
+  cutoff=temp*param
   names(cutoff)=NULL
-  cutoff=cutoff*param
   return(cutoff)
 }

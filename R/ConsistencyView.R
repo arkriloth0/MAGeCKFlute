@@ -9,11 +9,14 @@
 #' @param dat A data frame.
 #' @param ctrlname A character, specifying the names of control samples.
 #' @param treatname A character, specifying the names of treatment samples.
+#' @param lab_treat A character, for labelling the treatment condition on graphs.
+#' @param lab_ctrl A character, for labelling the control condition on graphs.
 #' @param main A character, specifying title.
 #' @param filename A character, specifying a file name to create on disk.
 #' Set filename to be "NULL", if don't want to save the figure.
 #' @param width Numeric, specifying width of figure.
 #' @param height Numeric, specifying height of figure.
+#' @param units The units of figure size, one of "in", "cm", "mm", "px".
 #' @param ... Other available parameters in ggsave.
 #'
 #' @return An object created by \code{ggplot}, which can be assigned and further customized.
@@ -28,19 +31,21 @@
 #'
 #' @export
 
-ConsistencyView <- function(dat, ctrlname, treatname, main=NULL,
-                          filename=NULL, width=5, height = 4, ...){
+ConsistencyView <- function(dat, ctrlname, treatname, 
+                            lab_treat = "Treatment", lab_ctrl = "Control", main=NULL,
+                            filename=NULL, width=5, height = 4, units="in", ...){
   dd2 = data.frame(x = rowMeans(dat[,ctrlname,drop=FALSE]),
                    y = rowMeans(dat[,treatname,drop=FALSE]))
-  p = ScatterView(dd2, "x", "y", color="#1f78b4")
-  p = p + geom_abline(slope = 1, intercept = 0, color="gray50", linetype=2, size=0.8)
-  p = p + geom_smooth(method='lm', formula = y ~ x, se=TRUE, size=0.5, color="#e41a1c")
-  p = p + labs(x = ctrlname[1], y = treatname[1], title=main, color=NULL)
-  p = p + theme_bw(base_size = 14)
-  p = p + theme(plot.title = element_text(hjust = 0.5))
-  p = p + theme(legend.position = "none")
+  p = ScatterView(dd2, "x", "y", color="#1f78b4") + 
+    geom_abline(slope = 1, intercept = 0, color="gray50", linetype=2, size=0.8) + 
+    geom_smooth(method='lm', formula = y ~ x, se=TRUE, size=0.5, color="#e41a1c") + 
+    labs(x = lab_ctrl, y = lab_treat, title=main, color=NULL) + 
+    # theme_bw(base_size = 14) + 
+    theme_classic(base_size = 14) +
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    theme(legend.position = "none")
   if(!is.null(filename)){
-    ggsave(plot=p, filename=filename, units = "in", width=width, height = height, ...)
+    ggsave(plot=p, filename=filename, units = units, width=width, height = height, ...)
   }
   return(p)
 }

@@ -10,9 +10,9 @@
 #' @param geneList A numeric vector with gene as names.
 #' @param keytype "Entrez" or "Symbol".
 #' @param type Molecular signatures for testing, available datasets include
-#' Pathway (KEGG, REACTOME, C2_CP), GO (GOBP, GOCC, GOMF),
-#' MSIGDB (C1, C2 (C2_CP (C2_CP_PID, C2_CP_BIOCARTA), C2_CGP),
-#' C3 (C3_MIR, C3_TFT), C4, C6, C7, HALLMARK)
+#' Pathway (KEGG, REACTOME, C2_CP_PID, C2_CP_BIOCARTA, C2_CP_WIKIPATHWAYS, C2_CP_KEGG_MEDICUS), GO (GOBP, GOCC, GOMF),
+#' MSIGDB (C1, C2 (C2_CP (C2_CP_PID, C2_CP_BIOCARTA, C2_CP_WIKIPATHWAYS, C2_CP_KEGG_MEDICUS), C2_CGP),
+#' C3 (C3_MIR_MIRDB, C3_TFT_GTRD), C4 (C4_CGN, C4_CM, c4_3CA), C5 (C5_GO_BP, C5_GO_CC, C5_GO_MF, C5_HPO), C6, C7 (C7_IMMUNESIGDB, C7_VAX), C8, H)
 #' and Complex (CORUM). Any combination of them are also accessible
 #' (e.g. 'GOBP+GOMF+KEGG+REACTOME').
 #' @param method One of "ORT"(Over-Representing Test), "GSEA"(Gene Set Enrichment Analysis), and "HGT"(HyperGemetric test).
@@ -24,6 +24,7 @@
 #' @param filter Boolean, specifying whether filter out redundancies from the enrichment results.
 #' @param gmtpath The path to customized gmt file.
 #' @param verbose Boolean
+#' @param ... Other arguments passed to enrich.GSE, enrich.ORT, or enrich.HGT.
 #'
 #' @return \code{enrichRes} is an enrichResult instance.
 #'
@@ -48,11 +49,12 @@ EnrichAnalyzer = function(geneList, keytype = "Symbol",
                          method = "HGT",
                          organism = 'hsa',
                          pvalueCutoff = 1,
-                         limit = c(2, 100),
+                         limit = c(2, 800),
                          universe = NULL,
                          filter = FALSE,
                          gmtpath = NULL,
-                         verbose = TRUE){
+                         verbose = TRUE,
+                         ...){
 
   requireNamespace("stats", quietly=TRUE) || stop("need stats package")
   methods = c("ORT", "GSEA", "HGT")
@@ -66,17 +68,17 @@ EnrichAnalyzer = function(geneList, keytype = "Symbol",
                             organism = organism,
                             pvalueCutoff = pvalueCutoff,
                             limit = limit, gmtpath = gmtpath,
-                            verbose = verbose)
+                            verbose = verbose, ...)
   }else if(method == "ORT"){
     enrichRes <- enrich.ORT(geneList, keytype = keytype, type = type,
                             organism = organism, pvalueCutoff = pvalueCutoff,
                             limit = limit, universe = universe,
-                            gmtpath = gmtpath, verbose = verbose)
+                            gmtpath = gmtpath, verbose = verbose, ...)
   }else if(method == "HGT"){
     enrichRes = enrich.HGT(geneList, keytype = keytype, type = type,
                            organism = organism, pvalueCutoff = pvalueCutoff,
                            limit = limit, universe = universe,
-                           gmtpath = gmtpath, verbose = verbose)
+                           gmtpath = gmtpath, verbose = verbose, ...)
   }else{
     stop("Avaliable methods: GSEA, ORT, and HGT. ")
   }

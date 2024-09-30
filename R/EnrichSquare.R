@@ -59,13 +59,13 @@ EnrichSquare <- function(beta, id = "GeneID", keytype = "Entrez",
     reactome1 = enrich1@result[grepl("REACTOME", enrich1@result$ID), ]
     complex1 = enrich1@result[grepl("CPX|CORUM", enrich1@result$ID), ]
     kegg1 = list(enrichRes = kegg1, gridPlot = EnrichedView(kegg1, top = 0, bottom = top)
-                 + labs(title = "KEGG: midleft"))
+                 + labs(title = "KEGG: midleft") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobp1 = list(enrichRes = gobp1, gridPlot = EnrichedView(gobp1, top = 0, bottom = top)
-                 + labs(title = "GOBP: midleft"))
+                 + labs(title = "GOBP: midleft") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactome1 = list(enrichRes = reactome1, gridPlot = EnrichedView(reactome1, top = 0, bottom = top)
-                     + labs(title = "REACTOME: midleft"))
+                     + labs(title = "REACTOME: midleft") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complex1 = list(enrichRes = complex1, gridPlot = EnrichedView(complex1, top = 0, bottom = top)
-                    + labs(title = "Complex: midleft"))
+                    + labs(title = "Complex: midleft") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     kegg1 = gobp1 = reactome1 = complex1 = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -81,13 +81,13 @@ EnrichSquare <- function(beta, id = "GeneID", keytype = "Entrez",
     reactome2 = enrich2@result[grepl("REACTOME", enrich2@result$ID), ]
     complex2 = enrich2@result[grepl("CPX|CORUM", enrich2@result$ID), ]
     kegg2 = list(enrichRes = kegg2, gridPlot = EnrichedView(kegg2, top = top, bottom = 0)
-                 + labs(title = "KEGG: topcenter"))
+                 + labs(title = "KEGG: topcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobp2 = list(enrichRes = gobp2, gridPlot = EnrichedView(gobp2, top = top, bottom = 0)
-                 + labs(title = "GOBP: topcenter"))
+                 + labs(title = "GOBP: topcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactome2 = list(enrichRes = reactome2, gridPlot = EnrichedView(reactome2, top = top, bottom = 0)
-                     + labs(title = "REACTOME: topcenter"))
+                     + labs(title = "REACTOME: topcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complex2 = list(enrichRes = complex2, gridPlot = EnrichedView(complex2, top = top, bottom = 0)
-                    + labs(title = "Complex: topcenter"))
+                    + labs(title = "Complex: topcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     kegg2 = gobp2 = reactome2 = complex2 = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -103,13 +103,13 @@ EnrichSquare <- function(beta, id = "GeneID", keytype = "Entrez",
     reactome3 = enrich3@result[grepl("REACTOME", enrich3@result$ID), ]
     complex3 = enrich3@result[grepl("CPX|CORUM", enrich3@result$ID), ]
     kegg3 = list(enrichRes = kegg3, gridPlot = EnrichedView(kegg3, top = top, bottom = 0)
-                 + labs(title = "KEGG: midright"))
+                 + labs(title = "KEGG: midright") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobp3 = list(enrichRes = gobp3, gridPlot = EnrichedView(gobp3, top = top, bottom = 0)
-                 + labs(title = "GOBP: midright"))
+                 + labs(title = "GOBP: midright") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactome3 = list(enrichRes = reactome3, gridPlot = EnrichedView(reactome3, top = top, bottom = 0)
-                     + labs(title = "REACTOME: midright"))
+                     + labs(title = "REACTOME: midright") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complex3 = list(enrichRes = complex3, gridPlot = EnrichedView(complex3, top = top, bottom = 0)
-                    + labs(title = "Complex: midright"))
+                    + labs(title = "Complex: midright") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     kegg3 = gobp3 = reactome3 = complex3 = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -125,13 +125,13 @@ EnrichSquare <- function(beta, id = "GeneID", keytype = "Entrez",
     reactome4 = enrich4@result[grepl("REACTOME", enrich4@result$ID), ]
     complex4 = enrich4@result[grepl("CPX|CORUM", enrich4@result$ID), ]
     kegg4 = list(enrichRes = kegg4, gridPlot = EnrichedView(kegg4, top = 0, bottom = top)
-                 + labs(title = "KEGG: bottomcenter"))
+                 + labs(title = "KEGG: bottomcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobp4 = list(enrichRes = gobp4, gridPlot = EnrichedView(gobp4, top = 0, bottom = top)
-                 + labs(title = "GOBP: bottomcenter"))
+                 + labs(title = "GOBP: bottomcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactome4 = list(enrichRes = reactome4, gridPlot = EnrichedView(reactome4, top = 0, bottom = top)
-                     + labs(title = "REACTOME: bottomcenter"))
+                     + labs(title = "REACTOME: bottomcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complex4 = list(enrichRes = complex4, gridPlot = EnrichedView(complex4, top = 0, bottom = top)
-                    + labs(title = "Complex: bottomcenter"))
+                    + labs(title = "Complex: bottomcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     kegg4 = gobp4 = reactome4 = complex4 = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -147,13 +147,13 @@ EnrichSquare <- function(beta, id = "GeneID", keytype = "Entrez",
     reactome12 = enrich12@result[grepl("REACTOME", enrich12@result$ID), ]
     complex12 = enrich12@result[grepl("CPX|CORUM", enrich12@result$ID), ]
     kegg12 = list(enrichRes = kegg12, gridPlot = EnrichedView(kegg12, top = top, bottom = 0)
-                 + labs(title = "KEGG: midleft&topcenter"))
+                 + labs(title = "KEGG: midleft&topcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobp12 = list(enrichRes = gobp12, gridPlot = EnrichedView(gobp12, top = top, bottom = 0)
-                 + labs(title = "GOBP: midleft&topcenter"))
+                 + labs(title = "GOBP: midleft&topcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactome12 = list(enrichRes = reactome12, gridPlot = EnrichedView(reactome12, top = top, bottom = 0)
-                     + labs(title = "REACTOME: midleft&topcenter"))
+                     + labs(title = "REACTOME: midleft&topcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complex12 = list(enrichRes = complex12, gridPlot = EnrichedView(complex12, top = top, bottom = 0)
-                    + labs(title = "Complex: midleft&topcenter"))
+                    + labs(title = "Complex: midleft&topcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     kegg12 = gobp12 = reactome12 = complex12 = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -169,13 +169,13 @@ EnrichSquare <- function(beta, id = "GeneID", keytype = "Entrez",
     reactome13 = enrich13@result[grepl("REACTOME", enrich13@result$ID), ]
     complex13 = enrich13@result[grepl("CPX|CORUM", enrich13@result$ID), ]
     kegg13 = list(enrichRes = kegg13, gridPlot = EnrichedView(kegg13, top = top, bottom = top)
-                 + labs(title = "KEGG: midleft&midright"))
+                 + labs(title = "KEGG: midleft&midright") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobp13 = list(enrichRes = gobp13, gridPlot = EnrichedView(gobp13, top = top, bottom = top)
-                 + labs(title = "GOBP: midleft&midright"))
+                 + labs(title = "GOBP: midleft&midright") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactome13 = list(enrichRes = reactome13, gridPlot = EnrichedView(reactome13, top = top, bottom = top)
-                     + labs(title = "REACTOME: midleft&midright"))
+                     + labs(title = "REACTOME: midleft&midright") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complex13 = list(enrichRes = complex13, gridPlot = EnrichedView(complex13, top = top, bottom = top)
-                    + labs(title = "Complex: midleft&midright"))
+                    + labs(title = "Complex: midleft&midright") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     kegg13 = gobp13 = reactome13 = complex13 = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -191,13 +191,13 @@ EnrichSquare <- function(beta, id = "GeneID", keytype = "Entrez",
     reactome24 = enrich24@result[grepl("REACTOME", enrich24@result$ID), ]
     complex24 = enrich24@result[grepl("CPX|CORUM", enrich24@result$ID), ]
     kegg24 = list(enrichRes = kegg24, gridPlot = EnrichedView(kegg24, top = top, bottom = top)
-                 + labs(title = "KEGG: topcenter&botcenter"))
+                 + labs(title = "KEGG: topcenter&botcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobp24 = list(enrichRes = gobp24, gridPlot = EnrichedView(gobp24, top = top, bottom = top)
-                 + labs(title = "GOBP: topcenter&botcenter"))
+                 + labs(title = "GOBP: topcenter&botcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactome24 = list(enrichRes = reactome24, gridPlot = EnrichedView(reactome24, top = top, bottom = top)
-                     + labs(title = "REACTOME: topcenter&botcenter"))
+                     + labs(title = "REACTOME: topcenter&botcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complex24 = list(enrichRes = complex24, gridPlot = EnrichedView(complex24, top = top, bottom = top)
-                    + labs(title = "Complex: topcenter&botcenter"))
+                    + labs(title = "Complex: topcenter&botcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     kegg24 = gobp24 = reactome24 = complex24 = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -213,13 +213,13 @@ EnrichSquare <- function(beta, id = "GeneID", keytype = "Entrez",
     reactome34 = enrich34@result[grepl("REACTOME", enrich34@result$ID), ]
     complex34 = enrich34@result[grepl("CPX|CORUM", enrich34@result$ID), ]
     kegg34 = list(enrichRes = kegg34, gridPlot = EnrichedView(kegg34, top = 0, bottom = top)
-                 + labs(title = "KEGG: midright&botcenter"))
+                 + labs(title = "KEGG: midright&botcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobp34 = list(enrichRes = gobp34, gridPlot = EnrichedView(gobp34, top = 0, bottom = top)
-                 + labs(title = "GOBP: midright&botcenter"))
+                 + labs(title = "GOBP: midright&botcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactome34 = list(enrichRes = reactome34, gridPlot = EnrichedView(reactome34, top = 0, bottom = top)
-                     + labs(title = "REACTOME: midright&botcenter"))
+                     + labs(title = "REACTOME: midright&botcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complex34 = list(enrichRes = complex34, gridPlot = EnrichedView(complex34, top = 0, bottom = top)
-                    + labs(title = "Complex: midright&botcenter"))
+                    + labs(title = "Complex: midright&botcenter") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     kegg34 = gobp34 = reactome34 = complex34 = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }

@@ -14,6 +14,7 @@
 #' Set filename to be "NULL", if don't want to save the figure.
 #' @param width Numeric, specifying width of figure.
 #' @param height Numeric, specifying height of figure.
+#' @param units The units of figure size, one of "in", "cm", "mm", "px".
 #' @param ... Other available parameters in ggsave.
 #'
 #' @return An object created by \code{ggplot}, which can be assigned and further customized.
@@ -33,30 +34,45 @@
 #' @importFrom reshape2 melt
 #'
 #' @export
-DensityView <- function(dat, samples = NULL,
-                        main = NULL, xlab = "Score",
-                        filename = NULL, width = 5, height = 4, ...){
-  if(!is.null(samples) && length(samples)>0){
+DensityView <- function(dat,
+                        samples = NULL,
+                        main = NULL,
+                        xlab = "Score",
+                        filename = NULL,
+                        width = 5,
+                        height = 4,
+                        units = "in",
+                        ...) {
+  if (!is.null(samples) && length(samples) > 0) {
     dat = dat[, samples, drop = FALSE]
   }
-  dd1 = reshape2::melt(dat,id=NULL)
-  if(!"variable" %in% colnames(dd1)){
+  dd1 = reshape2::melt(dat, id = NULL)
+  if (!"variable" %in% colnames(dd1)) {
     dd1$variable = colnames(dat)
   }
-  #==========
-  p = ggplot(data=dd1, aes_string(x="value", color="variable", group="variable"))
-  p = p + geom_density()
-  p = p + labs(color=NULL)
-  p = p + theme(legend.justification = c(1, 1), legend.position = c(0.99, 0.99))
-  # p=p+theme(legend.text = element_text(size=8))
-  p = p + labs(x=xlab, y="Density", title=main)
-  p = p + theme_bw(base_size = 14)
-  p = p + theme(plot.title = element_text(hjust = 0.5))
-
-  if(!is.null(filename)){
-    ggsave(plot=p, filename=filename, units = "in",
-           width=width, height=height, ...)
-  }
+  
+  p = ggplot(data = dd1,
+             aes_string(x = "value", color = "variable", group = "variable")) +
+    geom_density() +
+    labs(color = NULL) +
+    theme(legend.justification = c(1, 1),
+          legend.position = c(0.99, 0.99)) +
+    # theme(legend.text = element_text(size=8)) +
+    labs(x = xlab, y = "Density", title = main) +
+    # theme_bw(base_size = 14) +
+    theme_classic(base_size = 14) +
+    theme(plot.title = element_text(hjust = 0.5))
+    
+    if (!is.null(filename)) {
+      ggsave(
+        plot = p,
+        filename = filename,
+        units = units,
+        width = width,
+        height = height,
+        ...
+      )
+    }
   return(p)
 }
 
@@ -77,6 +93,7 @@ DensityView <- function(dat, samples = NULL,
 #' Set filename to be "NULL", if don't want to save the figure.
 #' @param width Numeric, specifying width of figure.
 #' @param height Numeric, specifying height of figure.
+#' @param units The units of figure size, one of "in", "cm", "mm", "px".
 #' @param ... Other parameters in ggsave.
 #'
 #' @return An object created by \code{ggplot}, which can be assigned and further customized.
@@ -94,22 +111,43 @@ DensityView <- function(dat, samples = NULL,
 #'
 #' @export
 
-DensityDiffView <- function(dat, ctrlname="Control", treatname="Treatment", main=NULL,
-                            filename=NULL, width = 5, height = 4, ...){
-  d = dat
-  d$Diff = rowMeans(d[,treatname,drop=FALSE])-rowMeans(d[,ctrlname,drop=FALSE])
-  d$r = rnorm(length(d$Diff), mean=0, sd=sd(d$Diff)-0.01)
-  p = ggplot(d, aes_string("Diff"))
-  p = p + geom_density(colour="black")
-  # p = p + geom_histogram(aes(y = ..density..), fill="gray90", binwidth=0.02)
-  p = p + geom_density(aes_string("r"), linetype="dashed", colour="red")
-  p = p + geom_vline(xintercept = 0,linetype="dashed")
-  p = p + theme_bw(base_size = 14)
-  p = p + theme(plot.title = element_text(hjust = 0.5))
-  p = p + labs(x="Treatment vs control", y="Density", title=main)
-
-  if(!is.null(filename)){
-    ggsave(plot=p, filename=filename, units = "in", width=width, height=height, ...)
+DensityDiffView <-
+  function(dat,
+           ctrlname = "Control",
+           treatname = "Treatment",
+           main = NULL,
+           filename = NULL,
+           width = 5,
+           height = 4,
+           units = "in",
+           ...) {
+    d = dat
+    d$Diff = rowMeans(d[, treatname, drop = FALSE]) - rowMeans(d[, ctrlname, drop =
+                                                                   FALSE])
+    d$r = rnorm(length(d$Diff),
+                mean = 0,
+                sd = sd(d$Diff) - 0.01)
+    p = ggplot(d, aes_string("Diff")) +
+      geom_density(colour = "black") +
+      # geom_histogram(aes(y = ..density..), fill="gray90", binwidth=0.02) +
+      geom_density(aes_string("r"),
+                   linetype = "dashed",
+                   colour = "red") +
+      geom_vline(xintercept = 0, linetype = "dashed") +
+      # theme_bw(base_size = 14) +
+      theme_classic(base_size = 14) +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      labs(x = "Treatment vs control", y = "Density", title = main) +
+      
+      if (!is.null(filename)) {
+        ggsave(
+          plot = p,
+          filename = filename,
+          units = units,
+          width = width,
+          height = height,
+          ...
+        )
+      }
+    return(p)
   }
-  return(p)
-}

@@ -318,13 +318,12 @@ getGeneAnn <- function(org = "hsa", update = FALSE){
                     "up000000589", "UP000002277", "UP000002494")
   names(proteome_code) = c("hsa", "bta", "cfa", "mmu", "ptr", "rno")
   locfname <- file.path(system.file("extdata", package = "MAGeCKFlute"),
-                        paste0("uniprot_proteome_", proteome_code[org], ".tab"))
-  uniprot_link <- paste0("https://www.uniprot.org/uniprot/?query=proteome:", proteome_code[org],
-                         "&format=tab&force=true&columns=id,reviewed,genes,database(Ensembl),database(RefSeq),comment(ALTERNATIVE%20PRODUCTS)&sort=score")
+                        paste0("uniprot_proteome_", proteome_code[org], ".tsv.gz"))
+  uniprot_link <- paste0("https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cgene_names%2Cxref_geneid%2Cxref_ensembl%2Ccc_alternative_products&format=tsv&query=%28%28proteome%3A",proteome_code[org],"%29%29")
 
   if((!file.exists(locfname)) | update){
     ## Download protein annotation information from uniprot
-    download.file(uniprot_link, locfname, quiet = TRUE)
+    download.file(uniprot_link, locfname, mode = "wb", quiet = TRUE)
   }
   ## Reorder the mapping file
   uniprot_ann = read.csv(gzfile(locfname), sep = "\t", header = TRUE, quote = "",

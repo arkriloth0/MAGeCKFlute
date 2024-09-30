@@ -38,6 +38,7 @@ EnrichedView = function(enrichment,
                         top = 0, bottom = 0,
                         x = "LogFDR",
                         charLength = 40,
+                        base_size = 11,
                         filename = NULL,
                         width = 7, height = 4, ...){
 
@@ -60,7 +61,10 @@ EnrichedView = function(enrichment,
   if(tolower(rank_by) == "pvalue"){
     enrichment = enrichment[order(enrichment$pvalue, -abs(enrichment$NES)), ]
   }else if(tolower(rank_by) == "nes"){
-    enrichment = enrichment[order(-abs(enrichment$NES), enrichment$pvalue), ]
+    if(top == 0 & bottom == 0) {
+      enrichment = enrichment[order(enrichment$NES, enrichment$pvalue), ]
+    } else {
+    enrichment = enrichment[order(-abs(enrichment$NES), enrichment$pvalue), ]}
   }
 
   ## Normalize term description ##
@@ -118,7 +122,7 @@ EnrichedView = function(enrichment,
                     panel.background=element_blank())
     p1 = p1 + theme(legend.position="right")
     p1 = p1 + theme(legend.key = element_rect(fill = "transparent", colour = "transparent"))
-    p1 = p1 + theme_bw(base_size = 14)
+    p1 = p1 + theme_bw(base_size = base_size)
     p1 = p1 + theme(plot.title = element_text(hjust = 0.5))
     p1 = p1 + guides(color = "none")
   }else if(mode == 2){
@@ -129,7 +133,7 @@ EnrichedView = function(enrichment,
     p1 = p1 + geom_point(aes_string(color = "col", size = "size"))
     p1 = p1 + xlim(0, NA)
     p1 = p1 + geom_text(aes_string(hjust = "hjust"))
-    p1 = p1 + theme_bw(base_size = 14) + theme(plot.title = element_text(hjust = 0.5))
+    p1 = p1 + theme_bw(base_size = base_size) + theme(plot.title = element_text(hjust = 0.5))
   }
   if(x=="NES"){
     p1 = p1 + labs(x = "Enrichment score", y = NULL, color = NULL,
@@ -158,8 +162,8 @@ noEnrichPlot = function(main = "No enriched terms"){
   p1 = ggplot()
   p1 = p1 + geom_text(aes(x=0, y=0, label="No enriched terms"), size=6)
   p1 = p1 + labs(title=main)
-  p1 = p1 + theme(plot.title = element_text(size=12))
-  p1 = p1 + theme_bw(base_size = 14)
+  p1 = p1 + theme(plot.title = element_text(size = base_size))
+  p1 = p1 + theme_bw(base_size = base_size)
   p1 = p1 + theme(plot.title = element_text(hjust = 0.5))
   p1
 }

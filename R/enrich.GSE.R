@@ -10,9 +10,9 @@
 #' @param geneList A order ranked numeric vector with geneid as names
 #' @param keytype "Entrez", "Ensembl", or "Symbol"
 #' @param type Molecular signatures for testing, available datasets include
-#' Pathway (KEGG, REACTOME, C2_CP), GO (GOBP, GOCC, GOMF),
-#' MSIGDB (C1, C2 (C2_CP (C2_CP_PID, C2_CP_BIOCARTA), C2_CGP),
-#' C3 (C3_MIR, C3_TFT), C4, C6, C7, HALLMARK)
+#' Pathway (KEGG, REACTOME, C2_CP_PID, C2_CP_BIOCARTA, C2_CP_WIKIPATHWAYS, C2_CP_KEGG_MEDICUS), GO (GOBP, GOCC, GOMF),
+#' MSIGDB (C1, C2 (C2_CP (C2_CP_PID, C2_CP_BIOCARTA, C2_CP_WIKIPATHWAYS, C2_CP_KEGG_MEDICUS), C2_CGP),
+#' C3 (C3_MIR_MIRDB, C3_TFT_GTRD), C4 (C4_CGN, C4_CM, c4_3CA), C5 (C5_GO_BP, C5_GO_CC, C5_GO_MF, C5_HPO), C6, C7 (C7_IMMUNESIGDB, C7_VAX), C8, H)
 #' and Complex (CORUM). Any combination of them are also accessible
 #' (e.g. 'GOBP+GOMF+KEGG+REACTOME')
 #' @param organism 'hsa' or 'mmu'
@@ -53,9 +53,9 @@ enrich.GSE <- function(geneList,
                        ...){
   requireNamespace("clusterProfiler", quietly=TRUE) || stop("Please install the clusterProfiler package")
   requireNamespace("DOSE", quietly=TRUE) || stop("Please install the DOSE package")
-  type[type=="GOBP"] <- "C5_BP"
-  type[type=="GOCC"] <- "C5_CC"
-  type[type=="GOMF"] <- "C5_MF"
+  # type[type=="GOBP"] <- "C5_BP"
+  # type[type=="GOCC"] <- "C5_CC"
+  # type[type=="GOMF"] <- "C5_MF"
   geneList = sort(geneList, decreasing = TRUE)
 
   ## Prepare gene set annotation
@@ -78,7 +78,7 @@ enrich.GSE <- function(geneList,
   len = length(unique(intersect(names(geneList), gene2path$Gene)))
   if(verbose) message("\t", len, " genes are mapped ...")
   enrichedRes = clusterProfiler::GSEA(geneList = geneList, pvalueCutoff = pvalueCutoff,
-                     minGSSize = 0, maxGSSize = max(limit),
+                     minGSSize = min(limit), maxGSSize = max(limit),
                      TERM2NAME = pathways, by = by,
                      TERM2GENE = gene2path[,c("PathwayID","Gene")],
                      verbose = verbose, ...)

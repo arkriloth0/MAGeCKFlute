@@ -16,6 +16,7 @@
 #' @param out.dir Path to save plot to (combined with filename).
 #' @param width As in ggsave.
 #' @param height As in ggsave.
+#' @param units The units of figure size, one of "in", "cm", "mm", "px".
 #' @param verbose Boolean
 #' @param ... Other available parameters in ggsave.
 #'
@@ -29,7 +30,7 @@ EnrichAB <- function(data,
                      top = 10,
                      limit = c(2, 100),
                      filename = NULL, out.dir = ".",
-                     width = 6.5, height = 4,
+                     width = 6.5, height = 4, units = "in", 
                      verbose = TRUE, ...){
 
   requireNamespace("clusterProfiler", quietly=TRUE) || stop("Need clusterProfiler package")
@@ -48,13 +49,13 @@ EnrichAB <- function(data,
     reactomeA = enrichA@result[grepl("REACTOME", enrichA@result$ID), ]
     complexA = enrichA@result[grepl("CORUM", enrichA@result$ID), ]
     keggA = list(enrichRes = keggA, gridPlot = EnrichedView(keggA, top = top, bottom = 0)
-                 + labs(title = "KEGG: Positive"))
+                 + labs(title = "KEGG: Positive") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobpA = list(enrichRes = gobpA, gridPlot = EnrichedView(gobpA, top = top, bottom = 0)
-               + labs(title = "GOBP: Positive"))
+               + labs(title = "GOBP: Positive") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactomeA = list(enrichRes = reactomeA, gridPlot = EnrichedView(reactomeA, top = top, bottom = 0)
-                     + labs(title = "REACTOME: Positive"))
+                     + labs(title = "REACTOME: Positive") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complexA = list(enrichRes = complexA, gridPlot = EnrichedView(complexA, top = top, bottom = 0)
-                    + labs(title = "Complex: Positive"))
+                    + labs(title = "Complex: Positive") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     keggA = gobpA = reactomeA = complexA = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -70,13 +71,13 @@ EnrichAB <- function(data,
     reactomeB = enrichB@result[grepl("REACTOME", enrichB@result$ID), ]
     complexB = enrichB@result[grepl("CORUM", enrichB@result$ID), ]
     keggB = list(enrichRes = keggB, gridPlot = EnrichedView(keggB, top = 0, bottom = top)
-                 + labs(title = "KEGG: Negative"))
+                 + labs(title = "KEGG: Negative") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     gobpB = list(enrichRes = gobpB, gridPlot = EnrichedView(gobpB, top = 0, bottom = top)
-               + labs(title = "GOBP: Negative"))
+               + labs(title = "GOBP: Negative") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     reactomeB = list(enrichRes = reactomeB, gridPlot = EnrichedView(reactomeB, top = 0, bottom = top)
-                     + labs(title = "REACTOME: Negative"))
+                     + labs(title = "REACTOME: Negative") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
     complexB = list(enrichRes = complexB, gridPlot = EnrichedView(complexB, top = 0, bottom = top)
-                    + labs(title = "Complex: Negative"))
+                    + labs(title = "Complex: Negative") + theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank()))
   }else{
     keggB = gobpB = reactomeB = complexB = list(enrichRes = NULL, gridPlot = noEnrichPlot())
   }
@@ -87,37 +88,37 @@ EnrichAB <- function(data,
       write.table(keggA$enrichRes, file.path(out.dir,paste0("GroupA_kegg_",filename,".txt")),
                   sep="\t", row.names = FALSE, col.names = TRUE,quote=FALSE)
       ggsave(keggA$gridPlot, filename=file.path(out.dir,paste0("GroupA_kegg_", filename,".png")),
-             units = "in", width=6.5, height=4)
+             units = units, width=6.5, height=4, ...)
       write.table(reactomeA$enrichRes, file.path(out.dir,paste0("GroupA_reactome_",filename,".txt")),
                   sep="\t", row.names = FALSE, col.names = TRUE,quote=FALSE)
       ggsave(reactomeA$gridPlot, filename=file.path(out.dir,paste0("GroupA_reactome_", filename,".png")),
-             units = "in", width=6.5, height=4)
+             units = units, width=6.5, height=4, ...)
       write.table(gobpA$enrichRes, file.path(out.dir,paste0("GroupA_gobp_",filename,".txt")),
                   sep="\t", row.names = FALSE, col.names = TRUE,quote=FALSE)
       ggsave(gobpA$gridPlot, filename=file.path(out.dir,paste0("GroupA_gobp_", filename,".png")),
-             units = "in", width=6.5, height=4)
+             units = units, width=6.5, height=4, ...)
       write.table(complexA$enrichRes, file.path(out.dir,paste0("GroupA_complex_",filename,".txt")),
                   sep="\t", row.names = FALSE, col.names = TRUE,quote=FALSE)
       ggsave(complexA$gridPlot, filename=file.path(out.dir,paste0("GroupA_complex_", filename,".png")),
-             units = "in", width=6.5, height=4)
+             units = units, width=6.5, height=4, ...)
     }
     if(!is.null(enrichB) && nrow(enrichB@result)>0){
       write.table(keggB$enrichRes, file.path(out.dir,paste0("GroupB_kegg_",filename,".txt")),
                   sep="\t", row.names = FALSE, col.names = TRUE,quote=FALSE)
       ggsave(keggB$gridPlot, filename=file.path(out.dir,paste0("GroupB_kegg_", filename,".png")),
-             units = "in", width=6.5, height=4)
+             units = units, width=6.5, height=4, ...)
       write.table(reactomeB$enrichRes, file.path(out.dir,paste0("GroupB_reactome_",filename,".txt")),
                   sep="\t", row.names = FALSE, col.names = TRUE,quote=FALSE)
       ggsave(reactomeB$gridPlot, filename=file.path(out.dir,paste0("GroupB_reactome_", filename,".png")),
-             units = "in", width=6.5, height=4)
+             units = units, width=6.5, height=4, ...)
       write.table(gobpB$enrichRes, file.path(out.dir,paste0("GroupB_gobp_",filename,".txt")),
                   sep="\t", row.names = FALSE, col.names = TRUE,quote=FALSE)
       ggsave(gobpB$gridPlot, filename=file.path(out.dir,paste0("GroupB_gobp_", filename,".png")),
-             units = "in", width=6.5, height=4)
+             units = units, width=6.5, height=4, ...)
       write.table(complexB$enrichRes, file.path(out.dir,paste0("GroupB_complex_",filename,".txt")),
                   sep="\t", row.names = FALSE, col.names = TRUE,quote=FALSE)
       ggsave(complexB$gridPlot, filename=file.path(out.dir,paste0("GroupB_complex_", filename,".png")),
-             units = "in", width=6.5, height=4)
+             units = units, width=6.5, height=4, ...)
     }
   }
   return(list(keggA=keggA, gobpA=gobpA, reactomeA=reactomeA, complexA=complexA,
